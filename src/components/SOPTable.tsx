@@ -13,13 +13,14 @@ import { formatBytes } from '@/lib/formatters';
 
 interface SOPTableProps {
   files: SOPFile[];
+  onPreview: (file: SOPFile) => void;
   onDownload: (file: SOPFile) => void;
   onUpdate: (file: SOPFile) => void;
   onDelete: (file: SOPFile) => void;
   loading?: boolean;
 }
 
-export function SOPTable({ files, onDownload, onUpdate, onDelete, loading }: SOPTableProps) {
+export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loading }: SOPTableProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -54,7 +55,7 @@ export function SOPTable({ files, onDownload, onUpdate, onDelete, loading }: SOP
             <TableRow key={file.id} className="hover:bg-muted/30">
               <TableCell className="font-medium">
                 <button
-                  onClick={() => onDownload(file)}
+                  onClick={() => onPreview(file)}
                   className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer group"
                 >
                   <FileText className="h-4 w-4 text-destructive group-hover:text-primary transition-colors" />
