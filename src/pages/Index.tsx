@@ -7,13 +7,15 @@ import { UpdateModal } from '@/components/UpdateModal';
 import { DeleteDialog } from '@/components/DeleteDialog';
 import { PDFPreviewModal } from '@/components/PDFPreviewModal';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { sopApi } from '@/services/sopApi';
-import { Upload, FileText } from 'lucide-react';
+import { Upload, FileText, Search } from 'lucide-react';
 
 const Index = () => {
   const [selectedBrand, setSelectedBrand] = useState<Brand>('knitwell');
   const [files, setFiles] = useState<SOPFile[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [updating, setUpdating] = useState(false);
@@ -117,7 +119,7 @@ const Index = () => {
       <main className="flex-1 flex flex-col">
         {/* Header */}
         <header className="border-b border-border bg-card px-8 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
                 <FileText className="h-8 w-8 text-primary" />
@@ -133,12 +135,23 @@ const Index = () => {
               Upload SOP
             </Button>
           </div>
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search files..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
         </header>
 
         {/* Content */}
         <div className="flex-1 p-8">
           <SOPTable
-            files={files}
+            files={files.filter(file => 
+              file.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )}
             loading={loading}
             onPreview={handlePreview}
             onDownload={handleDownload}
