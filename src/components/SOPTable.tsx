@@ -53,10 +53,13 @@ export function SOPTable({ files, onDownload, onUpdate, onDelete, loading }: SOP
           {files.map(file => (
             <TableRow key={file.id} className="hover:bg-muted/30">
               <TableCell className="font-medium">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-destructive" />
-                  {file.name}
-                </div>
+                <button
+                  onClick={() => onDownload(file)}
+                  className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer group"
+                >
+                  <FileText className="h-4 w-4 text-destructive group-hover:text-primary transition-colors" />
+                  <span className="group-hover:underline">{file.name}</span>
+                </button>
               </TableCell>
               <TableCell className="text-muted-foreground">{formatBytes(file.size)}</TableCell>
               <TableCell className="text-muted-foreground">
