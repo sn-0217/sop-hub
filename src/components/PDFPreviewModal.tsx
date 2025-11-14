@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-// @ts-ignore - Vite-specific entry point
-import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.vite';
-import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, X, Loader2 } from 'lucide-react';
 import { SOPFile } from '@/types/sop';
-
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PDFPreviewModalProps {
   open: boolean;
@@ -17,48 +12,43 @@ interface PDFPreviewModalProps {
 }
 
 export function PDFPreviewModal({ open, onClose, file, onDownload }: PDFPreviewModalProps) {
-  const [numPages, setNumPages] = useState<number>(0);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [scale, setScale] = useState<number>(1.0);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-    setPageNumber(1);
-    setLoading(false);
-  };
-
-  const onDocumentLoadError = (error: Error) => {
-    console.error('Error loading PDF:', error);
-    setLoading(false);
-  };
-
-  const goToPrevPage = () => {
-    setPageNumber(prev => Math.max(prev - 1, 1));
-  };
-
-  const goToNextPage = () => {
-    setPageNumber(prev => Math.min(prev + 1, numPages));
-  };
-
-  const zoomIn = () => {
-    setScale(prev => Math.min(prev + 0.2, 2.0));
-  };
-
-  const zoomOut = () => {
-    setScale(prev => Math.max(prev - 0.2, 0.5));
-  };
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [zoom, setZoom] = useState(100);
 
   const handleClose = () => {
-    setPageNumber(1);
-    setScale(1.0);
+    setCurrentPage(1);
+    setZoom(100);
     setLoading(true);
     onClose();
   };
 
-  // For demo purposes, we'll use a sample PDF URL
+  const handleIframeLoad = () => {
+    setLoading(false);
+  };
+
+  // For demo purposes, use a sample PDF URL
   // In production, use file.url
   const pdfUrl = 'https://pdfobject.com/pdf/sample.pdf';
+
+  // Create iframe URL with zoom parameter
+  const iframeUrl = `${pdfUrl}#page=${currentPage}&zoom=${zoom}`;
+
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(200, prev + 25));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(50, prev - 25));
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -78,32 +68,31 @@ export function PDFPreviewModal({ open, onClose, file, onDownload }: PDFPreviewM
             <Button
               variant="outline"
               size="sm"
-              onClick={goToPrevPage}
-              disabled={pageNumber <= 1}
+              onClick={handlePrevPage}
+              disabled={currentPage <= 1}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm font-medium min-w-[100px] text-center">
-              Page {pageNumber} of {numPages || '...'}
+            <span className="text-sm font-medium min-w-[80px] text-center">
+              Page {currentPage}
             </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={goToNextPage}
-              disabled={pageNumber >= numPages}
+              onClick={handleNextPage}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={zoomOut} disabled={scale <= 0.5}>
+            <Button variant="outline" size="sm" onClick={handleZoomOut} disabled={zoom <= 50}>
               <ZoomOut className="h-4 w-4" />
             </Button>
             <span className="text-sm font-medium min-w-[60px] text-center">
-              {Math.round(scale * 100)}%
+              {zoom}%
             </span>
-            <Button variant="outline" size="sm" onClick={zoomIn} disabled={scale >= 2.0}>
+            <Button variant="outline" size="sm" onClick={handleZoomIn} disabled={zoom >= 200}>
               <ZoomIn className="h-4 w-4" />
             </Button>
           </div>
@@ -115,39 +104,21 @@ export function PDFPreviewModal({ open, onClose, file, onDownload }: PDFPreviewM
         </div>
 
         {/* PDF Viewer */}
-        <div className="flex-1 overflow-auto bg-muted/20 flex items-start justify-center p-6">
+        <div className="flex-1 overflow-hidden bg-muted/20 relative">
           {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">Loading PDF...</p>
+              </div>
             </div>
           )}
-          <Document
-            file={pdfUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            loading={
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-              </div>
-            }
-            error={
-              <div className="text-center py-12">
-                <p className="text-destructive font-medium">Failed to load PDF</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Please try downloading the file instead
-                </p>
-              </div>
-            }
-          >
-            <div className="shadow-lg">
-              <Page
-                pageNumber={pageNumber}
-                scale={scale}
-                renderTextLayer={true}
-                renderAnnotationLayer={true}
-              />
-            </div>
-          </Document>
+          <iframe
+            src={iframeUrl}
+            className="w-full h-full border-0"
+            title={file?.name || 'PDF Preview'}
+            onLoad={handleIframeLoad}
+          />
         </div>
       </DialogContent>
     </Dialog>
