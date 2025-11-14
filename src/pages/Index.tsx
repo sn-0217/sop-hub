@@ -5,6 +5,7 @@ import { SOPTable } from '@/components/SOPTable';
 import { UploadModal } from '@/components/UploadModal';
 import { UpdateModal } from '@/components/UpdateModal';
 import { DeleteDialog } from '@/components/DeleteDialog';
+import { PDFPreviewModal } from '@/components/PDFPreviewModal';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { sopApi } from '@/services/sopApi';
@@ -22,6 +23,7 @@ const Index = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<SOPFile | null>(null);
 
   // Load files for selected brand
@@ -61,6 +63,11 @@ const Index = () => {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handlePreview = (file: SOPFile) => {
+    setSelectedFile(file);
+    setPreviewModalOpen(true);
   };
 
   const handleDownload = (file: SOPFile) => {
@@ -133,6 +140,7 @@ const Index = () => {
           <SOPTable
             files={files}
             loading={loading}
+            onPreview={handlePreview}
             onDownload={handleDownload}
             onUpdate={(file) => {
               setSelectedFile(file);
@@ -147,6 +155,16 @@ const Index = () => {
       </main>
 
       {/* Modals */}
+      <PDFPreviewModal
+        open={previewModalOpen}
+        onClose={() => {
+          setPreviewModalOpen(false);
+          setSelectedFile(null);
+        }}
+        file={selectedFile}
+        onDownload={() => selectedFile && handleDownload(selectedFile)}
+      />
+
       <UploadModal
         open={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
