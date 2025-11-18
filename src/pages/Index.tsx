@@ -114,40 +114,45 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Brand Selector */}
       <BrandSidebar selectedBrand={selectedBrand} onSelectBrand={setSelectedBrand} />
 
+      {/* Main Content */}
       <main className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="border-b border-border bg-card px-8 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                <FileText className="h-8 w-8 text-primary" />
-                SOP Management Portal
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Manage Standard Operating Procedures for{' '}
-                <span className="font-semibold text-foreground capitalize">{selectedBrand}</span>
-              </p>
+        <header className="border-b border-border bg-card">
+          <div className="px-8 py-6">
+            <div className="flex items-start justify-between gap-8 mb-6">
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-foreground flex items-center gap-3 mb-2">
+                  <FileText className="h-8 w-8 text-primary" />
+                  SOP Management Portal
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage Standard Operating Procedures for{' '}
+                  <span className="font-semibold text-foreground capitalize">{selectedBrand}</span>
+                </p>
+              </div>
+              <Button onClick={() => setUploadModalOpen(true)} size="lg" className="gap-2 shrink-0">
+                <Upload className="h-5 w-5" />
+                Upload SOP
+              </Button>
             </div>
-            <Button onClick={() => setUploadModalOpen(true)} size="lg" className="gap-2">
-              <Upload className="h-5 w-5" />
-              Upload SOP
-            </Button>
-          </div>
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search files..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
+            
+            <div className="relative max-w-xl">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search files by name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-11"
+              />
+            </div>
           </div>
         </header>
 
         {/* Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-8 bg-muted/30">
           <SOPTable
             files={files.filter(file => 
               file.name.toLowerCase().includes(searchQuery.toLowerCase())
