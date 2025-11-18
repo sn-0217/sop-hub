@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Brand, SOPFile, UploadMode } from '@/types/sop';
 import { BrandSidebar } from '@/components/BrandSidebar';
-import { FileCard } from '@/components/FileCard';
+import { SOPTable } from '@/components/SOPTable';
+import { StatisticsBar } from '@/components/StatisticsBar';
 import { UploadModal } from '@/components/UploadModal';
 import { UpdateModal } from '@/components/UpdateModal';
 import { DeleteDialog } from '@/components/DeleteDialog';
@@ -163,6 +164,10 @@ const Index = () => {
         {/* Content */}
         <div className="flex-1 bg-background">
           <div className="max-w-7xl mx-auto px-8 py-8">
+            {/* Statistics Bar */}
+            <StatisticsBar files={files} />
+            
+            {/* Table */}
             {loading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
@@ -186,26 +191,22 @@ const Index = () => {
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {files
-                  .filter(file => file.name.toLowerCase().includes(searchQuery.toLowerCase()))
-                  .map(file => (
-                    <FileCard
-                      key={file.id}
-                      file={file}
-                      onPreview={handlePreview}
-                      onDownload={handleDownload}
-                      onUpdate={(file) => {
-                        setSelectedFile(file);
-                        setUpdateModalOpen(true);
-                      }}
-                      onDelete={(file) => {
-                        setSelectedFile(file);
-                        setDeleteDialogOpen(true);
-                      }}
-                    />
-                  ))}
-              </div>
+              <SOPTable
+                files={files.filter(file => 
+                  file.name.toLowerCase().includes(searchQuery.toLowerCase())
+                )}
+                loading={loading}
+                onPreview={handlePreview}
+                onDownload={handleDownload}
+                onUpdate={(file) => {
+                  setSelectedFile(file);
+                  setUpdateModalOpen(true);
+                }}
+                onDelete={(file) => {
+                  setSelectedFile(file);
+                  setDeleteDialogOpen(true);
+                }}
+              />
             )}
           </div>
         </div>
