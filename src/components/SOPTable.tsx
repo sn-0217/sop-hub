@@ -40,29 +40,31 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
   }
 
   return (
-    <div className="border border-border rounded-lg overflow-hidden bg-card">
+    <div className="border border-border rounded-xl overflow-hidden bg-card shadow-sm">
       <Table>
         <TableHeader>
-          <TableRow className="bg-muted/50">
-            <TableHead className="font-semibold">File Name</TableHead>
-            <TableHead className="font-semibold">Size</TableHead>
-            <TableHead className="font-semibold">Uploaded Date</TableHead>
-            <TableHead className="text-right font-semibold">Actions</TableHead>
+          <TableRow className="bg-muted/30 hover:bg-muted/30">
+            <TableHead className="font-semibold text-foreground">Document Name</TableHead>
+            <TableHead className="font-semibold text-foreground">Size</TableHead>
+            <TableHead className="font-semibold text-foreground">Upload Date</TableHead>
+            <TableHead className="text-right font-semibold text-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {files.map(file => (
-            <TableRow key={file.id} className="hover:bg-muted/30">
+            <TableRow key={file.id} className="hover:bg-muted/20 transition-colors">
               <TableCell className="font-medium">
                 <button
                   onClick={() => onPreview(file)}
-                  className="flex items-center gap-2 hover:text-primary transition-colors cursor-pointer group"
+                  className="flex items-center gap-3 hover:text-primary transition-colors cursor-pointer group"
                 >
-                  <FileText className="h-4 w-4 text-destructive group-hover:text-primary transition-colors" />
+                  <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
+                    <FileText className="h-4 w-4 text-destructive" />
+                  </div>
                   <span className="group-hover:underline">{file.name}</span>
                 </button>
               </TableCell>
-              <TableCell className="text-muted-foreground">{formatBytes(file.size)}</TableCell>
+              <TableCell className="text-muted-foreground font-medium">{formatBytes(file.size)}</TableCell>
               <TableCell className="text-muted-foreground">
                 {new Date(file.uploadedDate).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -71,20 +73,21 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
                 })}
               </TableCell>
               <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-1">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => onDownload(file)}
-                    className="hover:bg-primary/10 hover:text-primary"
+                    className="h-9 px-3 hover:bg-primary/10 hover:text-primary"
                   >
-                    <Download className="h-4 w-4" />
+                    <Download className="h-4 w-4 mr-1.5" />
+                    Download
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => onUpdate(file)}
-                    className="hover:bg-warning/10 hover:text-warning"
+                    className="h-9 w-9 p-0 hover:bg-muted"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -92,7 +95,7 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
                     variant="ghost"
                     size="sm"
                     onClick={() => onDelete(file)}
-                    className="hover:bg-destructive/10 hover:text-destructive"
+                    className="h-9 w-9 p-0 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
