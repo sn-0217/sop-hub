@@ -45,6 +45,8 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
             <TableHead className="font-semibold text-foreground">Document Name</TableHead>
+            <TableHead className="font-semibold text-foreground">Category</TableHead>
+            <TableHead className="font-semibold text-foreground">Uploaded By</TableHead>
             <TableHead className="font-semibold text-foreground">Size</TableHead>
             <TableHead className="font-semibold text-foreground">Upload Date</TableHead>
             <TableHead className="text-right font-semibold text-foreground">Actions</TableHead>
@@ -63,6 +65,12 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
                   </div>
                   <span className="group-hover:underline">{file.name}</span>
                 </button>
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {file.fileCategory || <span className="text-muted-foreground/50">—</span>}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {file.uploadedBy || <span className="text-muted-foreground/50">—</span>}
               </TableCell>
               <TableCell className="text-muted-foreground font-medium">{formatBytes(file.size)}</TableCell>
               <TableCell className="text-muted-foreground">

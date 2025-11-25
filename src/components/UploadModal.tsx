@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Upload, FileUp, Globe } from 'lucide-react';
 import { FileDropzone } from './FileDropzone';
 import { Brand, UploadMode } from '@/types/sop';
@@ -10,7 +12,7 @@ interface UploadModalProps {
   open: boolean;
   onClose: () => void;
   selectedBrand: Brand;
-  onUpload: (files: File[], mode: UploadMode) => void;
+  onUpload: (files: File[], mode: UploadMode, metadata: { fileCategory: string; uploadedBy: string }) => void;
   uploading: boolean;
 }
 
@@ -19,6 +21,8 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
   const [bulkFiles, setBulkFiles] = useState<File[]>([]);
   const [globalFiles, setGlobalFiles] = useState<File[]>([]);
   const [activeTab, setActiveTab] = useState<UploadMode>('single');
+  const [fileCategory, setFileCategory] = useState('');
+  const [uploadedBy, setUploadedBy] = useState('');
 
   const handleUpload = () => {
     const filesMap = {
@@ -29,7 +33,7 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
     
     const files = filesMap[activeTab];
     if (files.length > 0) {
-      onUpload(files, activeTab);
+      onUpload(files, activeTab, { fileCategory, uploadedBy });
     }
   };
 
@@ -38,6 +42,8 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
       setSingleFiles([]);
       setBulkFiles([]);
       setGlobalFiles([]);
+      setFileCategory('');
+      setUploadedBy('');
       onClose();
     }
   };
@@ -82,6 +88,28 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
               <p className="text-sm text-muted-foreground">
                 Upload a single PDF file to <span className="font-semibold text-foreground">{selectedBrand}</span>
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fileCategory">File Category</Label>
+                  <Input
+                    id="fileCategory"
+                    placeholder="e.g., React, Node.js"
+                    value={fileCategory}
+                    onChange={(e) => setFileCategory(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="uploadedBy">Uploaded By</Label>
+                  <Input
+                    id="uploadedBy"
+                    placeholder="Your name"
+                    value={uploadedBy}
+                    onChange={(e) => setUploadedBy(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+              </div>
               <FileDropzone
                 files={singleFiles}
                 onFilesChange={setSingleFiles}
@@ -96,6 +124,28 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
               <p className="text-sm text-muted-foreground">
                 Upload multiple PDF files to <span className="font-semibold text-foreground">{selectedBrand}</span>
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fileCategory-bulk">File Category</Label>
+                  <Input
+                    id="fileCategory-bulk"
+                    placeholder="e.g., React, Node.js"
+                    value={fileCategory}
+                    onChange={(e) => setFileCategory(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="uploadedBy-bulk">Uploaded By</Label>
+                  <Input
+                    id="uploadedBy-bulk"
+                    placeholder="Your name"
+                    value={uploadedBy}
+                    onChange={(e) => setUploadedBy(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+              </div>
               <FileDropzone
                 files={bulkFiles}
                 onFilesChange={setBulkFiles}
@@ -110,6 +160,28 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
               <p className="text-sm text-muted-foreground">
                 Upload PDF files and copy them to <span className="font-semibold text-foreground">all brands</span> (Knitwell, Chico's, Talbots)
               </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fileCategory-global">File Category</Label>
+                  <Input
+                    id="fileCategory-global"
+                    placeholder="e.g., React, Node.js"
+                    value={fileCategory}
+                    onChange={(e) => setFileCategory(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="uploadedBy-global">Uploaded By</Label>
+                  <Input
+                    id="uploadedBy-global"
+                    placeholder="Your name"
+                    value={uploadedBy}
+                    onChange={(e) => setUploadedBy(e.target.value)}
+                    disabled={uploading}
+                  />
+                </div>
+              </div>
               <FileDropzone
                 files={globalFiles}
                 onFilesChange={setGlobalFiles}

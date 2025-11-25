@@ -46,17 +46,17 @@ const Index = () => {
     }
   };
 
-  const handleUpload = async (uploadFiles: File[], mode: UploadMode) => {
+  const handleUpload = async (uploadFiles: File[], mode: UploadMode, metadata: { fileCategory: string; uploadedBy: string }) => {
     setUploading(true);
     try {
       if (mode === 'single') {
-        await sopApi.uploadSOP(uploadFiles[0], selectedBrand);
+        await sopApi.uploadSOP(uploadFiles[0], selectedBrand, metadata);
         toast.success('SOP uploaded successfully');
       } else if (mode === 'bulk') {
-        await sopApi.uploadBulk(uploadFiles, selectedBrand);
+        await sopApi.uploadBulk(uploadFiles, selectedBrand, metadata);
         toast.success(`${uploadFiles.length} SOPs uploaded successfully`);
       } else if (mode === 'global') {
-        await sopApi.uploadGlobal(uploadFiles);
+        await sopApi.uploadGlobal(uploadFiles, metadata);
         toast.success(`SOPs uploaded to all brands successfully`);
       }
       setUploadModalOpen(false);

@@ -49,7 +49,7 @@ export const sopApi = {
   },
 
   // POST /api/sops/upload
-  async uploadSOP(file: File, brand: Brand): Promise<SOPFile> {
+  async uploadSOP(file: File, brand: Brand, metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile> {
     await delay(1000);
     
     const newFile: SOPFile = {
@@ -59,6 +59,8 @@ export const sopApi = {
       uploadedDate: new Date().toISOString().split('T')[0],
       brand,
       url: URL.createObjectURL(file),
+      fileCategory: metadata?.fileCategory,
+      uploadedBy: metadata?.uploadedBy,
     };
     
     sopFiles.push(newFile);
@@ -66,7 +68,7 @@ export const sopApi = {
   },
 
   // POST /api/sops/upload/bulk
-  async uploadBulk(files: File[], brand: Brand): Promise<SOPFile[]> {
+  async uploadBulk(files: File[], brand: Brand, metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile[]> {
     await delay(1500);
     
     const newFiles = files.map(file => ({
@@ -76,6 +78,8 @@ export const sopApi = {
       uploadedDate: new Date().toISOString().split('T')[0],
       brand,
       url: URL.createObjectURL(file),
+      fileCategory: metadata?.fileCategory,
+      uploadedBy: metadata?.uploadedBy,
     }));
     
     sopFiles.push(...newFiles);
@@ -83,7 +87,7 @@ export const sopApi = {
   },
 
   // POST /api/sops/upload/global
-  async uploadGlobal(files: File[]): Promise<SOPFile[]> {
+  async uploadGlobal(files: File[], metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile[]> {
     await delay(2000);
     
     const brands: Brand[] = ['knitwell', 'chicos', 'talbots'];
@@ -98,6 +102,8 @@ export const sopApi = {
           uploadedDate: new Date().toISOString().split('T')[0],
           brand,
           url: URL.createObjectURL(file),
+          fileCategory: metadata?.fileCategory,
+          uploadedBy: metadata?.uploadedBy,
         };
         newFiles.push(newFile);
       });

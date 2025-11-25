@@ -7,6 +7,8 @@ export interface SOPFile {
   uploadedDate: string;
   brand: Brand;
   url: string;
+  fileCategory?: string;
+  uploadedBy?: string;
 }
 
 export type UploadMode = 'single' | 'bulk' | 'global';
