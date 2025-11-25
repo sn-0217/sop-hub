@@ -34,7 +34,7 @@ export function UpdateModal({ open, onClose, file, onUpdate, updating }: UpdateM
         <DialogHeader>
           <DialogTitle>Update SOP Document</DialogTitle>
           <DialogDescription>
-            Replace <span className="font-semibold text-foreground">{file?.name}</span> with a new PDF file
+            Replace <span className="font-semibold text-foreground">{file?.fileName}</span> with a new PDF file
           </DialogDescription>
         </DialogHeader>
 

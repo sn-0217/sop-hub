@@ -25,7 +25,7 @@ export function DeleteDialog({ open, onClose, file, onConfirm, deleting }: Delet
         <AlertDialogHeader>
           <AlertDialogTitle>Delete SOP Document</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <span className="font-semibold text-foreground">{file?.name}</span>? This action cannot be undone.
+            Are you sure you want to delete <span className="font-semibold text-foreground">{file?.fileName}</span>? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

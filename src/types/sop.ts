@@ -2,13 +2,12 @@ export type Brand = 'knitwell' | 'chicos' | 'talbots';
 
 export interface SOPFile {
   id: string;
-  name: string;
-  size: number;
-  uploadedDate: string;
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  fileCategory: string;
   brand: Brand;
-  url: string;
-  fileCategory?: string;
-  uploadedBy?: string;
+  uploadedBy: string;
+  createdAt: string;
+  modifiedAt: string;
 }
-
-export type UploadMode = 'single' | 'bulk' | 'global';

@@ -63,7 +63,7 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
                   <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center flex-shrink-0">
                     <FileText className="h-4 w-4 text-destructive" />
                   </div>
-                  <span className="group-hover:underline">{file.name}</span>
+                  <span className="group-hover:underline">{file.fileName}</span>
                 </button>
               </TableCell>
               <TableCell className="text-muted-foreground">
@@ -72,9 +72,9 @@ export function SOPTable({ files, onPreview, onDownload, onUpdate, onDelete, loa
               <TableCell className="text-muted-foreground">
                 {file.uploadedBy || <span className="text-muted-foreground/50">—</span>}
               </TableCell>
-              <TableCell className="text-muted-foreground font-medium">{formatBytes(file.size)}</TableCell>
+              <TableCell className="text-muted-foreground font-medium">{formatBytes(file.fileSize)}</TableCell>
               <TableCell className="text-muted-foreground">
-                {new Date(file.uploadedDate).toLocaleDateString('en-US', {
+                {new Date(file.createdAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',

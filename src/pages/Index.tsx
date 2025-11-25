@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Brand, SOPFile, UploadMode } from '@/types/sop';
+import { Brand, SOPFile } from '@/types/sop';
 import { BrandSidebar } from '@/components/BrandSidebar';
 import { SOPTable } from '@/components/SOPTable';
 import { StatisticsBar } from '@/components/StatisticsBar';
@@ -66,9 +66,8 @@ const Index = () => {
   };
 
   const handleDownload = (file: SOPFile) => {
-    // Simulate download
-    toast.success(`Downloading ${file.name}`);
-    // In real implementation: window.open(file.url, '_blank');
+    toast.success(`Downloading ${file.fileName}`);
+    window.open(`http://localhost:8080${file.filePath.replace(/\\/g, '/')}`, '_blank');
   };
 
   const handleUpdate = async (file: File) => {
@@ -165,7 +164,7 @@ const Index = () => {
                 <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
               </div>
             ) : files.filter(file => 
-                file.name.toLowerCase().includes(searchQuery.toLowerCase())
+                file.fileName.toLowerCase().includes(searchQuery.toLowerCase())
               ).length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="w-20 h-20 rounded-2xl bg-muted/50 flex items-center justify-center mb-4">
@@ -185,7 +184,7 @@ const Index = () => {
             ) : (
               <SOPTable
                 files={files.filter(file => 
-                  file.name.toLowerCase().includes(searchQuery.toLowerCase())
+                  file.fileName.toLowerCase().includes(searchQuery.toLowerCase())
                 )}
                 loading={loading}
                 onPreview={handlePreview}
