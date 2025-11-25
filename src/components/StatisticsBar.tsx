@@ -8,11 +8,11 @@ interface StatisticsBarProps {
 
 export function StatisticsBar({ files }: StatisticsBarProps) {
   const totalFiles = files.length;
-  const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+  const totalSize = files.reduce((acc, file) => acc + file.fileSize, 0);
   
   // Get most recent upload date
   const latestUpload = files.length > 0 
-    ? new Date(Math.max(...files.map(f => new Date(f.uploadedDate).getTime())))
+    ? new Date(Math.max(...files.map(f => new Date(f.createdAt).getTime())))
     : null;
 
   const stats = [

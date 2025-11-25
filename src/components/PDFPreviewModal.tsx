@@ -55,7 +55,7 @@ export function PDFPreviewModal({ open, onClose, file, onDownload }: PDFPreviewM
       <DialogContent className="max-w-5xl h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b border-border">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg">{file?.name}</DialogTitle>
+            <DialogTitle className="text-lg">{file?.fileName}</DialogTitle>
             <Button variant="ghost" size="sm" onClick={handleClose}>
               <X className="h-4 w-4" />
             </Button>
@@ -116,7 +116,7 @@ export function PDFPreviewModal({ open, onClose, file, onDownload }: PDFPreviewM
           <iframe
             src={iframeUrl}
             className="w-full h-full border-0"
-            title={file?.name || 'PDF Preview'}
+            title={file?.fileName || 'PDF Preview'}
             onLoad={handleIframeLoad}
           />
         </div>

@@ -1,140 +1,52 @@
 import { Brand, SOPFile } from '@/types/sop';
 
-// Mock data for demonstration
-const mockData: SOPFile[] = [
-  {
-    id: '1',
-    name: 'Employee Handbook 2024.pdf',
-    size: 2457600,
-    uploadedDate: '2024-01-15',
-    brand: 'knitwell',
-    url: '#',
-  },
-  {
-    id: '2',
-    name: 'Safety Procedures.pdf',
-    size: 1536000,
-    uploadedDate: '2024-01-20',
-    brand: 'knitwell',
-    url: '#',
-  },
-  {
-    id: '3',
-    name: 'Quality Control Standards.pdf',
-    size: 3072000,
-    uploadedDate: '2024-02-01',
-    brand: 'chicos',
-    url: '#',
-  },
-  {
-    id: '4',
-    name: 'Customer Service Protocol.pdf',
-    size: 1843200,
-    uploadedDate: '2024-02-10',
-    brand: 'talbots',
-    url: '#',
-  },
-];
-
-let sopFiles = [...mockData];
-
-// Simulated API delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const API_BASE_URL = 'http://localhost:8080/api';
 
 export const sopApi = {
   // GET /api/sops?brand=xyz
   async getSOPs(brand: Brand): Promise<SOPFile[]> {
-    await delay(500);
-    return sopFiles.filter(file => file.brand === brand);
+    const response = await fetch(`${API_BASE_URL}/sops?brand=${brand}`);
+    if (!response.ok) throw new Error('Failed to fetch SOPs');
+    return response.json();
   },
 
   // POST /api/sops/upload
-  async uploadSOP(file: File, brand: Brand, metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile> {
-    await delay(1000);
+  async uploadSOP(file: File, brand: Brand, metadata: { fileCategory: string; uploadedBy: string }): Promise<SOPFile> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('brand', brand);
+    formData.append('fileCategory', metadata.fileCategory);
+    formData.append('uploadedBy', metadata.uploadedBy);
     
-    const newFile: SOPFile = {
-      id: Date.now().toString(),
-      name: file.name,
-      size: file.size,
-      uploadedDate: new Date().toISOString().split('T')[0],
-      brand,
-      url: URL.createObjectURL(file),
-      fileCategory: metadata?.fileCategory,
-      uploadedBy: metadata?.uploadedBy,
-    };
-    
-    sopFiles.push(newFile);
-    return newFile;
-  },
-
-  // POST /api/sops/upload/bulk
-  async uploadBulk(files: File[], brand: Brand, metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile[]> {
-    await delay(1500);
-    
-    const newFiles = files.map(file => ({
-      id: Date.now().toString() + Math.random(),
-      name: file.name,
-      size: file.size,
-      uploadedDate: new Date().toISOString().split('T')[0],
-      brand,
-      url: URL.createObjectURL(file),
-      fileCategory: metadata?.fileCategory,
-      uploadedBy: metadata?.uploadedBy,
-    }));
-    
-    sopFiles.push(...newFiles);
-    return newFiles;
-  },
-
-  // POST /api/sops/upload/global
-  async uploadGlobal(files: File[], metadata?: { fileCategory?: string; uploadedBy?: string }): Promise<SOPFile[]> {
-    await delay(2000);
-    
-    const brands: Brand[] = ['knitwell', 'chicos', 'talbots'];
-    const newFiles: SOPFile[] = [];
-    
-    brands.forEach(brand => {
-      files.forEach(file => {
-        const newFile: SOPFile = {
-          id: Date.now().toString() + Math.random(),
-          name: file.name,
-          size: file.size,
-          uploadedDate: new Date().toISOString().split('T')[0],
-          brand,
-          url: URL.createObjectURL(file),
-          fileCategory: metadata?.fileCategory,
-          uploadedBy: metadata?.uploadedBy,
-        };
-        newFiles.push(newFile);
-      });
+    const response = await fetch(`${API_BASE_URL}/sops/upload`, {
+      method: 'POST',
+      body: formData,
     });
     
-    sopFiles.push(...newFiles);
-    return newFiles;
+    if (!response.ok) throw new Error('Failed to upload SOP');
+    return response.json();
   },
 
   // PUT /api/sops/{id}
   async updateSOP(id: string, file: File): Promise<SOPFile> {
-    await delay(1000);
+    const formData = new FormData();
+    formData.append('file', file);
     
-    const index = sopFiles.findIndex(f => f.id === id);
-    if (index === -1) throw new Error('File not found');
+    const response = await fetch(`${API_BASE_URL}/sops/${id}`, {
+      method: 'PUT',
+      body: formData,
+    });
     
-    const updatedFile: SOPFile = {
-      ...sopFiles[index],
-      name: file.name,
-      size: file.size,
-      uploadedDate: new Date().toISOString().split('T')[0],
-      url: URL.createObjectURL(file),
-    };
-    
-    sopFiles[index] = updatedFile;
-    return updatedFile;
+    if (!response.ok) throw new Error('Failed to update SOP');
+    return response.json();
   },
 
   // DELETE /api/sops/{id}
   async deleteSOP(id: string): Promise<void> {
-    await delay(500);
-    sopFiles = sopFiles.filter(f => f.id !== id);
+    const response = await fetch(`${API_BASE_URL}/sops/${id}`, {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) throw new Error('Failed to delete SOP');
   },
 };

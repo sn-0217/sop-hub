@@ -37,13 +37,13 @@ export function FileCard({ file, onPreview, onDownload, onUpdate, onDelete }: Fi
           className="w-full text-left mb-3 group/title"
         >
           <h3 className="font-semibold text-foreground group-hover/title:text-primary transition-colors line-clamp-2 mb-1">
-            {file.name}
+            {file.fileName}
           </h3>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span>{formatBytes(file.size)}</span>
+            <span>{formatBytes(file.fileSize)}</span>
             <span>•</span>
             <span>
-              {new Date(file.uploadedDate).toLocaleDateString('en-US', {
+              {new Date(file.createdAt).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',
