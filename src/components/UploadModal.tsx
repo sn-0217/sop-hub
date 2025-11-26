@@ -12,7 +12,7 @@ interface UploadModalProps {
   open: boolean;
   onClose: () => void;
   selectedBrand: BrandFilter;
-  onUpload: (files: File[], brand: Brand, metadata: { fileCategory: string; uploadedBy: string }) => void;
+  onUpload: (file: File, brand: Brand, metadata: { fileCategory: string; uploadedBy: string }) => void;
   uploading: boolean;
 }
 
@@ -47,7 +47,7 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
 
   const handleUpload = () => {
     if (files.length > 0) {
-      onUpload(files, brand, { fileCategory, uploadedBy });
+      onUpload(files[0], brand, { fileCategory, uploadedBy });
     }
   };
 
@@ -126,7 +126,7 @@ export function UploadModal({ open, onClose, selectedBrand, onUpload, uploading 
               <FileDropzone
                 files={files}
                 onFilesChange={setFiles}
-                maxFiles={10}
+                maxFiles={1}
                 disabled={uploading}
                 className="h-full min-h-[150px]"
               />
