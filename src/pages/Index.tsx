@@ -63,36 +63,15 @@ const Index = () => {
     }
   };
 
-  const handleUpload = async (files: File[], brand: Brand, metadata: { fileCategory: string; uploadedBy: string }) => {
+  const handleUpload = async (file: File, brand: Brand, metadata: { fileCategory: string; uploadedBy: string }) => {
     setUploading(true);
-    let successCount = 0;
-    let failCount = 0;
-
     try {
-      // Process uploads sequentially or concurrently. Using Promise.allSettled for concurrency.
-      const results = await Promise.allSettled(
-        files.map(file => sopApi.uploadSOP(file, brand, metadata))
-      );
-
-      results.forEach(result => {
-        if (result.status === 'fulfilled') {
-          successCount++;
-        } else {
-          failCount++;
-        }
-      });
-
-      if (successCount > 0) {
-        toast.success(`Successfully uploaded ${successCount} file${successCount !== 1 ? 's' : ''}`);
-      }
-      if (failCount > 0) {
-        toast.error(`Failed to upload ${failCount} file${failCount !== 1 ? 's' : ''}`);
-      }
-
+      await sopApi.uploadSOP(file, brand, metadata);
+      toast.success('Document uploaded successfully');
       setUploadModalOpen(false);
       loadFiles();
     } catch (error) {
-      toast.error('An unexpected error occurred during upload');
+      toast.error('Failed to upload document');
     } finally {
       setUploading(false);
     }
